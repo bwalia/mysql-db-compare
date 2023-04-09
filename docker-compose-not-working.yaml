@@ -8,17 +8,6 @@ services:
       - DATABASE_DRIVER=mysql
       - DATABASE_ENCODING=utf8
       - SAMPLE_DATA_LENGTH=100
-      - DATABASE_HOST='18.168.24.70'
-      - DATABASE_PORT=3306
-      - DATABASE_NAME='myworkstation_test'
-      - DATABASE_USER=root
-      - DATABASE_PASSWORD='$1F0N0qDq%'
-      - DATABASE_DESCRIPTION=Test database
-      - DATABASE_HOST_SECONDARY=host.docker.internal
-      - DATABASE_PORT_SECONDARY=3306
-      - DATABASE_NAME_SECONDARY='myworkstation_acc'
-      - DATABASE_USER_SECONDARY=root
-      - DATABASE_PASSWORD_SECONDARY='$1F0N0qDq%'
       - DATABASE_DESCRIPTION_SECONDARY=Production database
     ports:
       - "8000:8000"
