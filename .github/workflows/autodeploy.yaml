@@ -29,38 +29,38 @@ jobs:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+        - name: Checkout
+          uses: actions/checkout@v3
 
       # - name: Create and or Update MySQL DB compare Docker image and push to Docker repo
       #   run: chmod +x ./workflow.sh && ./workflow.sh "${{ env.KUBE_CONFIG_DATA_K3S2 }}" "${{ env.TARGET_CLOUD_PROVIDER }}"
 
-      - name: Build MySQL DB compare Docker image based on the TARGET PLATFORM Image and push to Docker Hub
-        run: |
-          echo "MySQL DB compare Docker image builder!"
-          echo "Build, tag, and push image to the given Docker Registry."
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWD }}
-          docker build -f Dockerfile --build-arg BASE_TAG=latest -t mdbc-${{ env.TARGET_STACK }} . --no-cache
-          docker tag mdbc-${{ env.TARGET_STACK }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
-          docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
-        shell: bash
+        - name: Build MySQL DB compare Docker image based on the TARGET PLATFORM Image and push to Docker Hub
+          run: |
+            echo "MySQL DB compare Docker image builder!"
+            echo "Build, tag, and push image to the given Docker Registry."
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWD }}
+            docker build -f Dockerfile --build-arg BASE_TAG=latest -t mdbc-${{ env.TARGET_STACK }} . --no-cache
+            docker tag mdbc-${{ env.TARGET_STACK }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
+            docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
+          shell: bash
 
 
-      - name: Helm Deploy - Release to selected K3S cluster
-        uses: koslib/helm-eks-action@master
-        with:
-          command: |
-            # helm upgrade -i mdbc-${{ env.TARGET_ENV }} ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER}}.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace ${{ env.TARGET_ENV }} --create-namespace
-            # kubectl rollout restart deployment/mdbc-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}
-            # kubectl rollout history deployment/mdbc-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}
-          
-      - name: Slack Notification for Workstation CRM release 
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_CHANNEL: general
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_ICON: https://github.com/rtCamp.png?size=48
-          SLACK_MESSAGE: 'Post Content :rocket:'
-          SLACK_TITLE: Post Title
-          SLACK_USERNAME: rtCamp
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        - name: Helm Deploy - Release to selected K3S cluster
+          uses: koslib/helm-eks-action@master
+          with:
+            command: |
+              # helm upgrade -i mdbc-${{ env.TARGET_ENV }} ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER}}.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace ${{ env.TARGET_ENV }} --create-namespace
+              # kubectl rollout restart deployment/mdbc-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}
+              # kubectl rollout history deployment/mdbc-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}
+            
+        - name: Slack Notification for Workstation CRM release 
+          uses: rtCamp/action-slack-notify@v2
+          env:
+            SLACK_CHANNEL: general
+            SLACK_COLOR: ${{ job.status }}
+            SLACK_ICON: https://github.com/rtCamp.png?size=48
+            SLACK_MESSAGE: 'Post Content :rocket:'
+            SLACK_TITLE: Post Title
+            SLACK_USERNAME: rtCamp
+            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
