@@ -9,5 +9,6 @@ services:
       - DATABASE_ENCODING=utf8
       - SAMPLE_DATA_LENGTH=100
       - DATABASE_DESCRIPTION_SECONDARY=Production database
+# Credentials removed I hate Docker compose
     ports:
       - "8000:8000"
