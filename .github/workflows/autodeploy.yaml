@@ -2,7 +2,7 @@ name: Auto deploy workflow to kickstart infra setup and manage entire life cycle
 
 on:
   push:
-    branches: [ dummy ]  #feature/syn-pop-prod
+    branches: [ main ]  #feature/syn-pop-prod
   pull_request:
     branches: [ feature/* ]
   workflow_dispatch:
